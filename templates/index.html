@@ -2,45 +2,54 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Mini Bank System</title>
-    <link rel="stylesheet" href="/static/styles.css">
-    <style>
-        body { font-family: Arial, sans-serif; margin: 2em; }
-        form { margin-bottom: 1em; }
-        .hidden { display: none; }
-        .message { color: green; }
-        .error { color: red; }
-    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css?v={{ static_version }}">
 </head>
 <body>
-    <h2>Bank Login</h2>
-    <form id="login-form">
-        <label>Account Number: <input type="text" id="account-number" required></label><br>
-        <label>Password (PIN): <input type="password" id="password" required></label><br>
-        <button type="submit">Login</button>
-    </form>
-    <div id="login-error" class="error"></div>
-    
-    <div id="bank-panel" class="hidden">
-        <h2>Welcome!</h2>
-        <button onclick="logout()">Logout</button>
-        <br><br>
-        <form id="deposit-form">
-            <label>Deposit Amount: <input type="number" min="1" id="deposit-amt"></label>
-            <button type="submit">Deposit</button>
-        </form>
-        <form id="withdraw-form">
-            <label>Withdraw Amount: <input type="number" min="1" id="withdraw-amt"></label>
-            <button type="submit">Withdraw</button>
-        </form>
-        <button onclick="getBalance()">Check Balance</button>
-        <div id="balance"></div>
-        <div id="operation-message" class="message"></div>
+    <div class="center-container">
+        <div class="main-panel">
+            <h2>Bank Login</h2>
+            <form id="login-form" autocomplete="off">
+                <label>Account Number:
+                    <input type="text" id="account-number" placeholder="Enter account number" required autocomplete="username">
+                </label>
+                <label>Password (PIN):
+                    <input type="password" id="password" placeholder="Enter PIN" required autocomplete="current-password">
+                </label>
+                <button type="submit">Login</button>
+            </form>
+            <div id="login-error" class="error"></div>
+
+            <div id="bank-panel" class="hidden">
+                <h2>Welcome!</h2>
+                <form id="deposit-form">
+                    <label>Deposit Amount:
+                        <input type="number" min="1" id="deposit-amt" placeholder="Amount">
+                    </label>
+                    <button type="submit">Deposit</button>
+                </form>
+                <form id="withdraw-form">
+                    <label>Withdraw Amount:
+                        <input type="number" min="1" id="withdraw-amt" placeholder="Amount">
+                    </label>
+                    <button type="submit">Withdraw</button>
+                </form>
+                <button onclick="getBalance()" style="margin-top:8px;">Check Balance</button>
+                <div id="balance"></div>
+                <div id="operation-message" class="message"></div>
+                <div class="panel-footer">
+                    <button class="logout-btn" onclick="logout()">Logout</button>
+                </div>
+            </div>
+        </div>
     </div>
-
     <script>
+        // -- same JavaScript logic as your original, unchanged.
         let currentAccount = null;
-
         document.getElementById("login-form").onsubmit = async function(e) {
             e.preventDefault();
             const acc = document.getElementById("account-number").value;

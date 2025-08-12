@@ -4,6 +4,8 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
+from pathlib import Path 
+import os
 from bank_logic import Account
 
 app = FastAPI()
@@ -16,8 +18,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
-templates = Jinja2Templates(directory="templates")
+BASE_DIR = Path(__file__).resolve().parent
+app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")
+templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
 accounts = {
     "1001": Account(pin=1234, balance=1000),
@@ -26,7 +29,13 @@ accounts = {
 
 @app.get("/", response_class=HTMLResponse)
 async def get_home(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    # Bust browser cache when CSS file changes by appending last-modified timestamp
+    css_path = BASE_DIR / "static" / "styles.css"
+    static_version = int(os.path.getmtime(css_path)) if css_path.exists() else 1
+    return templates.TemplateResponse(
+        "index.html",
+        {"request": request, "static_version": static_version},
+    )
 
 @app.post("/login")
 async def login(account_number: str = Form(...), password: str = Form(...)):
