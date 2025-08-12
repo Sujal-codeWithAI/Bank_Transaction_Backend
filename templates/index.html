@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mini Bank System</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2em; }
+        form { margin-bottom: 1em; }
+        .hidden { display: none; }
+        .message { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h2>Bank Login</h2>
+    <form id="login-form">
+        <label>Account Number: <input type="text" id="account-number" required></label><br>
+        <label>Password (PIN): <input type="password" id="password" required></label><br>
+        <button type="submit">Login</button>
+    </form>
+    <div id="login-error" class="error"></div>
+    
+    <div id="bank-panel" class="hidden">
+        <h2>Welcome!</h2>
+        <button onclick="logout()">Logout</button>
+        <br><br>
+        <form id="deposit-form">
+            <label>Deposit Amount: <input type="number" min="1" id="deposit-amt"></label>
+            <button type="submit">Deposit</button>
+        </form>
+        <form id="withdraw-form">
+            <label>Withdraw Amount: <input type="number" min="1" id="withdraw-amt"></label>
+            <button type="submit">Withdraw</button>
+        </form>
+        <button onclick="getBalance()">Check Balance</button>
+        <div id="balance"></div>
+        <div id="operation-message" class="message"></div>
+    </div>
+
+    <script>
+        let currentAccount = null;
+
+        document.getElementById("login-form").onsubmit = async function(e) {
+            e.preventDefault();
+            const acc = document.getElementById("account-number").value;
+            const pass = document.getElementById("password").value;
+            const resp = await fetch("/login", {
+                method: "POST",
+                headers: {"Content-Type": "application/x-www-form-urlencoded"},
+                body: `account_number=${encodeURIComponent(acc)}&password=${encodeURIComponent(pass)}`
+            });
+            const data = await resp.json();
+            if (data.success) {
+                currentAccount = acc;
+                document.getElementById("login-form").classList.add("hidden");
+                document.getElementById("login-error").textContent = "";
+                document.getElementById("bank-panel").classList.remove("hidden");
+                document.getElementById("operation-message").textContent = "";
+            } else {
+                document.getElementById("login-error").textContent = data.message;
+            }
+        };
+
+        document.getElementById("deposit-form").onsubmit = async function(e) {
+            e.preventDefault();
+            const amt = document.getElementById("deposit-amt").value;
+            const resp = await fetch("/deposit", {
+                method: "POST",
+                headers: {"Content-Type": "application/x-www-form-urlencoded"},
+                body: `account_number=${encodeURIComponent(currentAccount)}&amount=${encodeURIComponent(amt)}`
+            });
+            const data = await resp.json();
+            showMessage(data);
+        };
+
+        document.getElementById("withdraw-form").onsubmit = async function(e) {
+            e.preventDefault();
+            const amt = document.getElementById("withdraw-amt").value;
+            const resp = await fetch("/withdraw", {
+                method: "POST",
+                headers: {"Content-Type": "application/x-www-form-urlencoded"},
+                body: `account_number=${encodeURIComponent(currentAccount)}&amount=${encodeURIComponent(amt)}`
+            });
+            const data = await resp.json();
+            showMessage(data);
+        };
+
+        function getBalance() {
+            fetch(`/balance?account_number=${encodeURIComponent(currentAccount)}`)
+                .then(resp => resp.json())
+                .then(data => {
+                    if(data.success) {
+                        document.getElementById("balance").textContent = `Current Balance: ₹${data.balance}`;
+                    } else {
+                        document.getElementById("balance").textContent = data.message;
+                    }
+                });
+        }
+
+        function showMessage(data) {
+            document.getElementById("operation-message").textContent = data.message;
+            if (data.success && data.balance !== undefined) {
+                document.getElementById("balance").textContent = `Current Balance: ₹${data.balance}`;
+            }
+        }
+
+        function logout() {
+            currentAccount = null;
+            document.getElementById("bank-panel").classList.add("hidden");
+            document.getElementById("login-form").classList.remove("hidden");
+            document.getElementById("login-error").textContent = "";
+            document.getElementById("operation-message").textContent = "";
+            document.getElementById("balance").textContent = "";
+            document.getElementById("deposit-amt").value = "";
+            document.getElementById("withdraw-amt").value = "";
+        }
+    </script>
+</body>
+</html>

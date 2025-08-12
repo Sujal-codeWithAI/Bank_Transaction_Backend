@@ -1,0 +1,74 @@
+body {
+    background: #f7f8fa;
+    font-family: Arial, sans-serif;
+    color: #222;
+    margin: 0;
+    padding: 0;
+}
+h2 {
+    color: #2657a4;
+}
+form {
+    background: #fff;
+    padding: 16px 24px;
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(40,70,130,0.05);
+    max-width: 320px;
+    margin-bottom: 18px;
+}
+label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 15px;
+}
+input[type="text"],
+input[type="password"],
+input[type="number"] {
+    width: 100%;
+    padding: 7px 8px;
+    margin-top: 2px;
+    margin-bottom: 11px;
+    border: 1px solid #bbb;
+    border-radius: 5px;
+    font-size: 15px;
+}
+button {
+    background: #2657a4;
+    color: #fff;
+    padding: 8px 18px;
+    border: none;
+    border-radius: 5px;
+    font-size: 15px;
+    cursor: pointer;
+    margin-top: 6px;
+}
+button:hover {
+    background: #19376b;
+}
+#bank-panel {
+    background: #f1f5fb;
+    border-radius: 8px;
+    box-shadow: 0 2px 7px #abc7ee30;
+    padding: 18px;
+    max-width: 350px;
+}
+.message {
+    color: #2b7a2b;
+    font-weight: bold;
+    margin: 10px 0;
+}
+.error {
+    color: #c0392b;
+    font-weight: bold;
+    margin: 10px 0;
+}
+#balance {
+    background: #fff;
+    display: inline-block;
+    padding: 7px 18px;
+    border-radius: 17px;
+    box-shadow: 0 2px 5px #ccc3;
+    margin-top: 13px;
+    font-weight: bold;
+    color: #1b4b9c;
+}
